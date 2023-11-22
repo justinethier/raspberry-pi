@@ -69,7 +69,7 @@ int main( void )
   while ( 1 )
   {
     read_dht11_dat();
-    delay( 1000 ); 
+    delay( 1000 * 30 ); 
   }
  
   return(0);
