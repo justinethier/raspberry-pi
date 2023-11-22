@@ -1,4 +1,3 @@
-
 all: example
 
 example: example.c
@@ -14,3 +13,8 @@ run: example
 
 clean:
 	rm -rf example
+
+# TODO:
+#test:
+# - format
+# - unit tests??
