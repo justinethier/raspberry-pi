@@ -4,7 +4,10 @@ all: example
 example: example.c
 	gcc -o example example.c -lwiringPi -lwiringPiDev
 
-.phony: clean run
+.phony: format clean run
+
+format:
+	clang-format -i example.c
 
 run: example
 	sudo ./example
