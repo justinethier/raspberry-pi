@@ -2,10 +2,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <time.h>
 #define MAXTIMINGS  85
 #define DHTPIN    7
 int dht11_dat[5] = { 0, 0, 0, 0, 0 };
  
+float degrees_c2f(int whole, int decimal) 
+{
+  float c = whole + (decimal / 10.0);
+  return (c * 9.0 / 5.0) + 32;
+}
+
 void read_dht11_dat()
 {
   uint8_t laststate = HIGH;
@@ -51,9 +58,18 @@ void read_dht11_dat()
   if ( (j >= 40) &&
        (dht11_dat[4] == ( (dht11_dat[0] + dht11_dat[1] + dht11_dat[2] + dht11_dat[3]) & 0xFF) ) )
   {
-    f = dht11_dat[2] * 9. / 5. + 32;
-    printf( "Humidity = %d.%d %% Temperature = %d.%d C (%.1f F)\n",
-      dht11_dat[0], dht11_dat[1], dht11_dat[2], dht11_dat[3], f );
+    time_t rawtime;
+    struct tm * timeinfo;
+  
+    time ( &rawtime );
+    timeinfo = localtime ( &rawtime );
+    //printf ( "Current local time and date: %s", asctime (timeinfo) );
+
+    f = degrees_c2f(dht11_dat[2], dht11_dat[3]);
+    char *timestamp = asctime(timeinfo);
+    timestamp[24] = ' ';
+    printf( "%s- Humidity = %d.%d %% Temperature = %d.%d C (%.1f F)\n",
+      timestamp, dht11_dat[0], dht11_dat[1], dht11_dat[2], dht11_dat[3], f );
   }else  {
     printf( "Data not good, skip\n" );
   }
@@ -69,7 +85,7 @@ int main( void )
   while ( 1 )
   {
     read_dht11_dat();
-    delay( 1000 * 30 ); 
+    delay( 1000 * 60 ); 
   }
  
   return(0);
